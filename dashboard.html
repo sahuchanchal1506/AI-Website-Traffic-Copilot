@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body style="font-family:Arial; margin:40px;">
+
+<h1>AI Website Traffic Copilot Dashboard</h1>
+
+<hr>
+
+<h3>Uploaded File</h3>
+<p><b>File Name:</b> {{ filename }}</p>
+
+<p><b>Total Rows:</b> {{ rows }}</p>
+
+<p><b>Total Columns:</b> {{ columns }}</p>
+
+<hr>
+
+<h2>Data Preview</h2>
+
+{{ table|safe }}
+
+</body>
+</html>                                         
