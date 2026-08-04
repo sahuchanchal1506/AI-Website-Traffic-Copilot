@@ -38,9 +38,13 @@ for name, file in files.items():
 if all(files.values()):
     st.success("✅ All six files uploaded successfully!")
 
-    traffic_df = pd.read_csv(traffic)
-    user_df = pd.read_csv(user)
-    events_df = pd.read_csv(events)
+   traffic.seek(0)
+   user.seek(0)
+   events.seek(0)
+
+   traffic_df = pd.read_csv(traffic)
+   user_df = pd.read_csv(user)
+   events_df = pd.read_csv(events)   
 
     st.divider()
     st.header("📊 Website Traffic Dashboard")
