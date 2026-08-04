@@ -4,83 +4,97 @@ import pandas as pd
 st.set_page_config(page_title="AI Website Traffic Copilot", layout="wide")
 
 st.title("🚀 AI Website Traffic Copilot")
-st.write("Upload your 6 website traffic CSV files")
+st.write("Upload your 6 Website Traffic CSV files")
 
-audience = st.file_uploader("Audience CSV", type="csv")
-events = st.file_uploader("Events CSV", type="csv")
-landing = st.file_uploader("Landing Page CSV", type="csv")
-pages = st.file_uploader("Pages CSV", type="csv")
-traffic = st.file_uploader("Traffic CSV", type="csv")
-user = st.file_uploader("User Acquisition CSV", type="csv")
+# File Upload
+audience = st.file_uploader("Audience CSV", type=["csv"])
+events = st.file_uploader("Events CSV", type=["csv"])
+landing = st.file_uploader("Landing Page CSV", type=["csv"])
+pages = st.file_uploader("Pages CSV", type=["csv"])
+traffic = st.file_uploader("Traffic CSV", type=["csv"])
+user = st.file_uploader("User Acquisition CSV", type=["csv"])
 
-files = {
-    "Audience": audience,
-    "Events": events,
-    "Landing Page": landing,
-    "Pages": pages,
-    "Traffic": traffic,
-    "User Acquisition": user
-}
+if (
+    audience is not None
+    and events is not None
+    and landing is not None
+    and pages is not None
+    and traffic is not None
+    and user is not None
+):
 
-for name, file in files.items():
-    if file is not None:
-        df = pd.read_csv(file)
+    audience_df = pd.read_csv(audience)
+    events_df = pd.read_csv(events)
+    landing_df = pd.read_csv(landing)
+    pages_df = pd.read_csv(pages)
+    traffic_df = pd.read_csv(traffic)
+    user_df = pd.read_csv(user)
 
-        st.subheader(name)
-
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Rows", df.shape[0])
-        c2.metric("Columns", df.shape[1])
-        c3.metric("Missing Values", int(df.isnull().sum().sum()))
-
-        st.dataframe(df.head())
-
-if all(files.values()):
     st.success("✅ All six files uploaded successfully!")
 
-   traffic.seek(0)
-   user.seek(0)
-   events.seek(0)
+    st.header("📊 Dashboard")
 
-   traffic_df = pd.read_csv(traffic)
-   user_df = pd.read_csv(user)
-   events_df = pd.read_csv(events)   
+    c1, c2, c3 = st.columns(3)
+
+    c1.metric("Audience Rows", audience_df.shape[0])
+    c2.metric("Traffic Rows", traffic_df.shape[0])
+    c3.metric("Events Rows", events_df.shape[0])
 
     st.divider()
-    st.header("📊 Website Traffic Dashboard")
 
-    col1, col2, col3 = st.columns(3)
-
-    total_users = user_df.iloc[:, -1].sum()
-    total_events = events_df.iloc[:, -1].sum()
-    total_traffic = traffic_df.iloc[:, -1].sum()
-
-    col1.metric("👥 Total Users", f"{total_users:,}")
-    col2.metric("📈 Total Traffic", f"{total_traffic:,}")
-    col3.metric("🎯 Total Events", f"{total_events:,}")
+    st.subheader("Audience Data")
+    st.dataframe(audience_df.head())
 
     st.subheader("Traffic Data")
-    st.write(traffic_df.columns)
-    st.write(traffic_df.head())  
+    st.dataframe(traffic_df.head())
 
-    st.subheader("User Acquisition")
-    st.bar_chart(user_df.iloc[:, [0, -1]].set_index(user_df.columns[0]))
+    st.subheader("Events Data")
+    st.dataframe(events_df.head())
 
-    st.subheader("Events")
-    st.bar_chart(events_df.iloc[:, [0, -1]].set_index(events_df.columns[0]))
+    st.divider()
+
+    st.subheader("Traffic Chart")
+
+    numeric_cols = traffic_df.select_dtypes(include="number").columns
+
+    if len(numeric_cols) > 0:
+        st.bar_chart(traffic_df[numeric_cols])
+    else:
+        st.warning("No numeric columns found in Traffic CSV.")
+
+    st.subheader("User Acquisition Chart")
+
+    numeric_cols = user_df.select_dtypes(include="number").columns
+
+    if len(numeric_cols) > 0:
+        st.bar_chart(user_df[numeric_cols])
+    else:
+        st.warning("No numeric columns found in User Acquisition CSV.")
+
+    st.subheader("Events Chart")
+
+    numeric_cols = events_df.select_dtypes(include="number").columns
+
+    if len(numeric_cols) > 0:
+        st.bar_chart(events_df[numeric_cols])
+    else:
+        st.warning("No numeric columns found in Events CSV.")
+
+    st.divider()
 
     st.subheader("🤖 AI Insights")
 
-    top_channel = user_df.iloc[user_df.iloc[:, -1].idxmax(), 0]
+    st.info("""
+✅ All files uploaded successfully.
 
-    st.info(f"""
-    • Top acquisition channel: **{top_channel}**
+📈 Website traffic data loaded.
 
-    • Uploads completed successfully.
+📊 Dashboard generated.
 
-    • Focus on the highest-performing traffic source.
+🎯 Focus on channels with the highest sessions.
 
-    • Optimize low-performing channels to increase website traffic.
-    """)
+🚀 Improve low-performing traffic sources.
+""")
+
 else:
     st.warning("Please upload all six CSV files.")
