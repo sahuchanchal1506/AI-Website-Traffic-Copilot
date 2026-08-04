@@ -55,8 +55,9 @@ if all(files.values()):
     col2.metric("📈 Total Traffic", f"{total_traffic:,}")
     col3.metric("🎯 Total Events", f"{total_events:,}")
 
-    st.subheader("Traffic Overview")
-    st.bar_chart(traffic_df.iloc[:, [0, -1]].set_index(traffic_df.columns[0]))
+    st.subheader("Traffic Data")
+    st.write(traffic_df.columns)
+    st.write(traffic_df.head())  
 
     st.subheader("User Acquisition")
     st.bar_chart(user_df.iloc[:, [0, -1]].set_index(user_df.columns[0]))
