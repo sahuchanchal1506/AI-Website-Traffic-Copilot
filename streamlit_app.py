@@ -35,4 +35,47 @@ for name, file in files.items():
 
         st.dataframe(df.head())
 
-st.success("Upload all six CSV files to view their details.")
+if all(files.values()):
+    st.success("✅ All six files uploaded successfully!")
+
+    traffic_df = pd.read_csv(traffic)
+    user_df = pd.read_csv(user)
+    events_df = pd.read_csv(events)
+
+    st.divider()
+    st.header("📊 Website Traffic Dashboard")
+
+    col1, col2, col3 = st.columns(3)
+
+    total_users = user_df.iloc[:, -1].sum()
+    total_events = events_df.iloc[:, -1].sum()
+    total_traffic = traffic_df.iloc[:, -1].sum()
+
+    col1.metric("👥 Total Users", f"{total_users:,}")
+    col2.metric("📈 Total Traffic", f"{total_traffic:,}")
+    col3.metric("🎯 Total Events", f"{total_events:,}")
+
+    st.subheader("Traffic Overview")
+    st.bar_chart(traffic_df.iloc[:, [0, -1]].set_index(traffic_df.columns[0]))
+
+    st.subheader("User Acquisition")
+    st.bar_chart(user_df.iloc[:, [0, -1]].set_index(user_df.columns[0]))
+
+    st.subheader("Events")
+    st.bar_chart(events_df.iloc[:, [0, -1]].set_index(events_df.columns[0]))
+
+    st.subheader("🤖 AI Insights")
+
+    top_channel = user_df.iloc[user_df.iloc[:, -1].idxmax(), 0]
+
+    st.info(f"""
+    • Top acquisition channel: **{top_channel}**
+
+    • Uploads completed successfully.
+
+    • Focus on the highest-performing traffic source.
+
+    • Optimize low-performing channels to increase website traffic.
+    """)
+else:
+    st.warning("Please upload all six CSV files.")
